@@ -37,6 +37,7 @@ def create_app(rfid_reader: RFIDReaderProtocol | None = None) -> FastAPI:
     
     services.room_controller.register_endpoints(app)
     services.role_controller.register_endpoints(app)
+    services.collaborator_controller.register_endpoints(app)
     return app
 
 

@@ -14,11 +14,16 @@ from .room.controllers import RoomController
 from .role.repositories import RoleRepository
 from .role.services import RoleService
 from .role.controllers import RoleController
+
+from .collaborator.repositories import CollaboratorRepository
+from .collaborator.services import CollaboratorService
+from .collaborator.controllers import CollaboratorController
     
 @dataclass
 class ServicesContainer:
     room_controller: RoomController
     role_controller: RoleController
+    collaborator_controller: CollaboratorController
     raspberry_pi_service: RaspberryPiService
     rfid_room_service: RFIDRoomService
 
@@ -34,6 +39,10 @@ def register_services(
     role_service = RoleService(role_repo=role_repository)
     role_controller = RoleController(role_service=role_service)
     
+    collaborator_repository = CollaboratorRepository(get_session)
+    collaborator_service = CollaboratorService(collaborator_repo=collaborator_repository)
+    collaborator_controller = CollaboratorController(collaborator_service=collaborator_service)
+    
     raspberry_pi_service = RaspberryPiService(rfid_reader)
     
     rfid_room_service = RFIDRoomService(
@@ -44,6 +53,7 @@ def register_services(
     return ServicesContainer(
         room_controller=room_controller,
         role_controller=role_controller,
+        collaborator_controller=collaborator_controller,
         raspberry_pi_service=raspberry_pi_service,
         rfid_room_service=rfid_room_service,
     )

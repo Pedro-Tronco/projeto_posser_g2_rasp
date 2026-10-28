@@ -7,7 +7,6 @@ class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
 
-    collaborators: list["Colaborator"] = Relationship(back_populates="room")
     allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="room")
 
 
@@ -15,20 +14,18 @@ class Role(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
 
-    collaborators: list["Colaborator"] = Relationship(back_populates="role")
+    collaborators: list["Collaborator"] = Relationship(back_populates="role")
     allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="role")
 
 
-class Colaborator(SQLModel, table=True):
+class Collaborator(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     name: str = Field(index=True)
     rfid_tag: str = Field(unique=True, index=True)
     active: bool = Field(default=True)
 
-    room_id: Optional[int] = Field(default=None, foreign_key="room.id")
     role_id: Optional[int] = Field(default=None, foreign_key="role.id")
 
-    room: Optional[Room] = Relationship(back_populates="collaborators")
     role: Optional[Role] = Relationship(back_populates="collaborators")
 
 
