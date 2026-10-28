@@ -3,7 +3,7 @@ from contextlib import AbstractContextManager
 from sqlmodel import Session, select
 from typing import Sequence
 
-from .tables import (
+from ..tables import (
     Room, 
 )
 
@@ -17,9 +17,13 @@ class RoomRepository:
         self._session = session
         
         
-    def get_room_by_id(self, room_id: int) -> Room | None:
+    def _get_room(self, room_id: int) -> Room | None:
         with self._session() as session:
             return session.get(Room, room_id)
+        
+        
+    def get_room_by_id(self, room_id: int) -> Room | None:
+        return self._get_room(room_id)
     
     
     def get_all_rooms(self) -> Sequence[Room]:
@@ -38,7 +42,7 @@ class RoomRepository:
         
     def update_room(self, room_id: int, new_room: CreateRoomRequest) -> Room:
         with self._session() as session:
-            room = session.get(Room, room_id)
+            room = self._get_room(room_id)
             if room is None:
                 raise RuntimeError(f'Room {room_id} not found in DB')
 
@@ -52,7 +56,7 @@ class RoomRepository:
     
     def delete_room(self, room_id: int) -> Room:
         with self._session() as session:
-            room = session.get(Room, room_id)
+            room = self._get_room(room_id)
             if room is None:
                 raise RuntimeError(f'Room {room_id} not found in DB')
             

@@ -7,9 +7,11 @@ from .schemas import (
     CreateRoomRequest,
 )
 
+
 class RoomController:
     def __init__(self, room_service: RoomService) -> None:
         self._room_service = room_service
+
 
     def register_endpoints(self, app: FastAPI) -> None:
         @app.get("/room")
@@ -25,14 +27,14 @@ class RoomController:
             )
         
         @app.post("/room")
-        def create_room(room: CreateRoomRequest):
+        def post_room(room: CreateRoomRequest):
             return asdict(
                 self._room_service.create_room(room)
             )
             
             
-        @app.put("/room/{room_id}")
-        def update_room(room_id: int, room: CreateRoomRequest):
+        @app.patch("/room/{room_id}")
+        def patch_room(room_id: int, room: CreateRoomRequest):
             return asdict(
                 self._room_service.update_room(
                     room_id=room_id,

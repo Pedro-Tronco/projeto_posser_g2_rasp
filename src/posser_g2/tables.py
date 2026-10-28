@@ -11,12 +11,12 @@ class Room(SQLModel, table=True):
     allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="room")
 
 
-class Function(SQLModel, table=True):
+class Role(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
 
-    collaborators: list["Colaborator"] = Relationship(back_populates="function")
-    allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="function")
+    collaborators: list["Colaborator"] = Relationship(back_populates="role")
+    allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="role")
 
 
 class Colaborator(SQLModel, table=True):
@@ -26,15 +26,15 @@ class Colaborator(SQLModel, table=True):
     active: bool = Field(default=True)
 
     room_id: Optional[int] = Field(default=None, foreign_key="room.id")
-    function_id: Optional[int] = Field(default=None, foreign_key="function.id")
+    role_id: Optional[int] = Field(default=None, foreign_key="role.id")
 
     room: Optional[Room] = Relationship(back_populates="collaborators")
-    function: Optional[Function] = Relationship(back_populates="collaborators")
+    role: Optional[Role] = Relationship(back_populates="collaborators")
 
 
 class AllowedRooms(SQLModel, table=True):
     room_id: Optional[int] = Field(default=None, foreign_key="room.id", primary_key=True)
-    function_id: Optional[int] = Field(default=None, foreign_key="function.id", primary_key=True)
+    role_id: Optional[int] = Field(default=None, foreign_key="role.id", primary_key=True)
 
     room: Optional[Room] = Relationship(back_populates="allowed_rooms")
-    function: Optional[Function] = Relationship(back_populates="allowed_rooms")
+    role: Optional[Role] = Relationship(back_populates="allowed_rooms")

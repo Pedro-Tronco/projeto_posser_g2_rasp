@@ -17,7 +17,7 @@ class RoomService:
         room = self._room_repo.get_room_by_id(room_id)
         
         if room == None:
-            raise HTTPException(status_code=404, detail=f'Room {room_id} not found')
+            raise HTTPException(status_code=204, detail=f'Room {room_id} not found')
         
         return GetRoomResponse(
             room=room
@@ -45,7 +45,7 @@ class RoomService:
         new_room: CreateRoomRequest,
     ) -> GetRoomResponse:
         if self._room_repo.get_room_by_id(room_id) is None:
-            raise HTTPException(status_code = 404, detail=f'Room {room_id} not found')
+            raise HTTPException(status_code = 204, detail=f'Room {room_id} not found')
         
         return GetRoomResponse(
             room=self._room_repo.update_room(room_id=room_id, new_room=new_room)
@@ -54,7 +54,7 @@ class RoomService:
 
     def delete_room(self, room_id: int) -> GetRoomResponse:
         if self._room_repo.get_room_by_id(room_id) is None:
-            raise HTTPException(status_code = 404, detail=f'Room {room_id} not found')
+            raise HTTPException(status_code = 204, detail=f'Room {room_id} not found')
         
         return GetRoomResponse(
             room=self._room_repo.delete_room(room_id)

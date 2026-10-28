@@ -12,6 +12,7 @@ from .service_registry import register_services
 def create_app(rfid_reader: RFIDReaderProtocol | None = None) -> FastAPI:
     if rfid_reader is None:
         rfid_reader = MFRC522Reader()
+        
     services = register_services(rfid_reader)
 
     @asynccontextmanager
@@ -31,8 +32,11 @@ def create_app(rfid_reader: RFIDReaderProtocol | None = None) -> FastAPI:
             services.raspberry_pi_service.close()
 
     app = FastAPI(lifespan=lifespan)
+    
     app.state.services = services
+    
     services.room_controller.register_endpoints(app)
+    services.role_controller.register_endpoints(app)
     return app
 
 
