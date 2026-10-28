@@ -7,7 +7,7 @@ class Room(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(index=True)
 
-    allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="room")
+    room_control: list["RoomControl"] = Relationship(back_populates="room")
 
 
 class Role(SQLModel, table=True):
@@ -15,7 +15,7 @@ class Role(SQLModel, table=True):
     name: str = Field(index=True)
 
     collaborators: list["Collaborator"] = Relationship(back_populates="role")
-    allowed_rooms: list["AllowedRooms"] = Relationship(back_populates="role")
+    room_control: list["RoomControl"] = Relationship(back_populates="role")
 
 
 class Collaborator(SQLModel, table=True):
@@ -29,9 +29,9 @@ class Collaborator(SQLModel, table=True):
     role: Optional[Role] = Relationship(back_populates="collaborators")
 
 
-class AllowedRooms(SQLModel, table=True):
+class RoomControl(SQLModel, table=True):
     room_id: Optional[int] = Field(default=None, foreign_key="room.id", primary_key=True)
     role_id: Optional[int] = Field(default=None, foreign_key="role.id", primary_key=True)
 
-    room: Optional[Room] = Relationship(back_populates="allowed_rooms")
-    role: Optional[Role] = Relationship(back_populates="allowed_rooms")
+    room: Optional[Room] = Relationship(back_populates="room_control")
+    role: Optional[Role] = Relationship(back_populates="room_control")

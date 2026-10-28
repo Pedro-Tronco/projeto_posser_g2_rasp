@@ -42,7 +42,7 @@ class CollaboratorRepository:
                 filters.append(Collaborator.name.ilike(f"%{params.name}%"))
             
             if params.room_id is not None:
-                filters.append(Role.allowed_rooms.any(Room.id == params.room_id))
+                filters.append(Role.room_control.any(Room.id == params.room_id))
                 
             if params.active is not None:
                 filters.append(Collaborator.active == params.active)

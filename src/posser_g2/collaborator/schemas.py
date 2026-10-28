@@ -9,7 +9,7 @@ class CreateCollaboratorBody(BaseModel):
     name: str
     rfid_tag: str
     role_id: int
-    active: Optional[bool] = True
+    active: bool = True
     
     
 class GetCollaboratorsParams(BaseModel):
@@ -18,6 +18,7 @@ class GetCollaboratorsParams(BaseModel):
     name: Optional[str] = Field(None, min_length=1)
     rfid_tag: Optional[str] = Field(None) 
     active: Optional[bool] = Field(None)
+    
     
 @dataclass(frozen=True, slots=True)
 class AllCollaboratorsResponse:
