@@ -1,0 +1,11 @@
+services:
+  backend:
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./data:/app/data
+    devices:
+      - /dev/gpiomem:/dev/gpiomem

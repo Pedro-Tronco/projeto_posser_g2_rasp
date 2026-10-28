@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from .database import get_session
+from .rasp.animations import AnimationService
 from .rasp.services import (
     RaspberryPiService,
     RFIDReaderProtocol,
@@ -29,6 +30,7 @@ class ServicesContainer:
     role_controller: RoleController
     collaborator_controller: CollaboratorController
     room_control_controller: RoomControlController
+    animation_service: AnimationService
     raspberry_pi_service: RaspberryPiService
     rfid_room_service: RFIDRoomService
 
@@ -54,11 +56,13 @@ def register_services(
         room_control_service=room_control_service
     )
     
+    animation_service = AnimationService()
     raspberry_pi_service = RaspberryPiService(rfid_reader)
     
     rfid_room_service = RFIDRoomService(
         raspberry_pi_service=raspberry_pi_service,
         room_service=room_service,
+        animation_service=animation_service,
     )
 
     return ServicesContainer(
@@ -66,6 +70,7 @@ def register_services(
         role_controller=role_controller,
         collaborator_controller=collaborator_controller,
         room_control_controller=room_control_controller,
+        animation_service=animation_service,
         raspberry_pi_service=raspberry_pi_service,
         rfid_room_service=rfid_room_service,
     )

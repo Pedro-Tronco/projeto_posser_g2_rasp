@@ -35,3 +35,5 @@ class RoomControl(SQLModel, table=True):
 
     room: Optional[Room] = Relationship(back_populates="room_control")
     role: Optional[Role] = Relationship(back_populates="room_control")
+
+
