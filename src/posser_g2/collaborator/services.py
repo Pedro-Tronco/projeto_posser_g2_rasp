@@ -5,6 +5,7 @@ from .repositories import CollaboratorRepository
 
 from .schemas import (
     CreateCollaboratorBody,
+    GetCollaboratorsParams,
     AllCollaboratorsResponse,
     CollaboratorResponse,
 )
@@ -15,9 +16,9 @@ class CollaboratorService:
         self._collaborator_repo = collaborator_repo
         
         
-    def get_all_colaborators(self) -> AllCollaboratorsResponse:
+    def get_colaborators(self, params: GetCollaboratorsParams) -> AllCollaboratorsResponse:
         return AllCollaboratorsResponse(
-            collaborators=self._collaborator_repo.get_all_collaborators()
+            collaborators=self._collaborator_repo.get_collaborators(params)
         )
         
         
@@ -33,6 +34,17 @@ class CollaboratorService:
         
         
     def create_collaborator(self, collaborator: CreateCollaboratorBody) -> CollaboratorResponse:
+        if any(
+            self._collaborator_repo.get_collaborators(GetCollaboratorsParams(
+                rfid_tag=collaborator.rfid_tag,
+                active=None,
+                room_id=None,
+                name=None,
+                role_id=None,
+            ))
+        ):
+            raise HTTPException(status_code=400, detail=f'RFID {collaborator.rfid_tag} já cadastrado para outro Colaborador')
+                                                     
         return CollaboratorResponse(
             collaborator=self._collaborator_repo.create_collaborator(collaborator)
         )

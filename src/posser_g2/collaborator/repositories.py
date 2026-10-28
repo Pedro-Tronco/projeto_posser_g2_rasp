@@ -1,13 +1,14 @@
 from collections.abc import Callable
 from contextlib import AbstractContextManager
-from sqlmodel import Session, select
+from sqlmodel import Session, select, and_
 from typing import Sequence
 from uuid import UUID
 
-from ..tables import Collaborator
+from ..tables import Collaborator, Role, Room
 
 from .schemas import (
     CreateCollaboratorBody,
+    GetCollaboratorsParams,
 )
 
 
@@ -25,9 +26,31 @@ class CollaboratorRepository:
         return self._get_collaborator(collaborator_id)
     
     
-    def get_all_collaborators(self) -> Sequence[Collaborator]:
+    def get_collaborators(self, params: GetCollaboratorsParams) -> Sequence[Collaborator]:
         with self._session() as session:
-            return session.exec(select(Collaborator)).all()
+            query = select(Collaborator)
+            
+            filters = []
+            
+            if params.role_id is not None:
+                filters.append(Collaborator.role_id == params.role_id)
+                
+            if params.rfid_tag is not None:
+                filters.append(Collaborator.rfid_tag == params.rfid_tag)
+                
+            if params.name is not None:
+                filters.append(Collaborator.name.ilike(f"%{params.name}%"))
+            
+            if params.room_id is not None:
+                filters.append(Role.allowed_rooms.any(Room.id == params.room_id))
+                
+            if params.active is not None:
+                filters.append(Collaborator.active == params.active)
+                
+            if filters:
+                query = query.where(and_(*filters))
+            
+            return session.exec(query).all()
         
         
     def create_collaborator(self, new_collaborator: CreateCollaboratorBody):

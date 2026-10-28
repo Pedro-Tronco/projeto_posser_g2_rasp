@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
+from typing import Annotated
 from dataclasses import asdict
 from uuid import UUID
 
@@ -6,6 +7,7 @@ from .services import CollaboratorService
 
 from .schemas import (
     CreateCollaboratorBody,
+    GetCollaboratorsParams,
 )
 
 
@@ -16,9 +18,9 @@ class CollaboratorController:
         
     def register_endpoints(self, app: FastAPI) -> None:
         @app.get("/collaborator")
-        def get_all_collaborators():
+        def get_collaborators(params: Annotated[GetCollaboratorsParams, Query()]):
             return asdict(
-                self._collaborator_service.get_all_colaborators()
+                self._collaborator_service.get_colaborators(params)
             )
             
             
